@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { AppProvider, useApp } from "@/context/AppContext";
+import { useApp } from "@/context/AppContext";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { GlobalSearchModal } from "@/components/layout/GlobalSearchModal";
@@ -83,9 +83,5 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <AppProvider>
-      <DashboardContent>{children}</DashboardContent>
-    </AppProvider>
-  );
+  return <DashboardContent>{children}</DashboardContent>;
 }
