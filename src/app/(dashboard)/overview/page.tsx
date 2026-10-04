@@ -78,7 +78,7 @@ export default function OverviewPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           question: "Show monthly revenue for the last 12 months.",
-          role: currentUser.role,
+          role: currentUser?.role || "ANALYST",
         }),
       });
       const data = await res.json();
@@ -97,7 +97,7 @@ export default function OverviewPage() {
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2 border-b border-[#E2E8F0]">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-[#111827]">
-            Good morning, {currentUser.name.split(" ")[0]} 👋
+            Good morning, {currentUser?.name ? currentUser.name.split(" ")[0] : "there"} 👋
           </h1>
           <p className="text-xs sm:text-sm text-[#64748B] mt-0.5">
             Explore your business data with natural language.
@@ -106,7 +106,7 @@ export default function OverviewPage() {
 
         {/* Quick Action Pill Buttons matching mockup #3 */}
         <div className="flex flex-wrap items-center gap-2">
-          {currentUser.role !== "VIEWER" && (
+          {currentUser?.role !== "VIEWER" && (
             <Link
               href="/dashboards/builder"
               className="px-3 py-2 rounded-xl bg-white border border-[#E2E8F0] hover:bg-slate-50 text-xs font-semibold text-[#111827] flex items-center space-x-1.5 shadow-2xs transition-colors"

@@ -91,7 +91,7 @@ export function Sidebar() {
   ];
 
   const filterByRole = (items: typeof mainNavItems) =>
-    items.filter((item) => item.roles.includes(currentUser.role));
+    items.filter((item) => currentUser?.role && item.roles.includes(currentUser.role));
 
   const visibleMain = filterByRole(mainNavItems);
   const visibleMonitoring = filterByRole(monitoringNavItems);
@@ -246,7 +246,7 @@ export function Sidebar() {
             </span>
           </div>
           <p className="text-[10px] text-text-secondary mt-1">
-            Role: <strong className="text-primary">{currentUser.role}</strong>
+            Role: <strong className="text-primary">{currentUser?.role || "GUEST"}</strong>
           </p>
         </div>
       )}

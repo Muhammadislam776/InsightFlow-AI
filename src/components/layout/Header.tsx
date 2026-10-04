@@ -144,7 +144,7 @@ export function Header() {
             className="flex items-center space-x-2 p-1.5 rounded-xl hover:bg-background border border-transparent hover:border-border transition-all"
           >
             <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-primary to-blue-400 flex items-center justify-center text-white text-xs font-bold shadow-subtle">
-              {currentUser.name
+              {(currentUser?.name || "User")
                 .split(" ")
                 .map((n) => n[0])
                 .join("")}
@@ -155,11 +155,11 @@ export function Header() {
           {profileMenuOpen && (
             <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-surface border border-border shadow-elevated p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
               <div className="p-3 border-b border-border bg-background/50 rounded-xl mb-1">
-                <p className="text-sm font-semibold text-text-primary">{currentUser.name}</p>
-                <p className="text-xs text-text-secondary truncate">{currentUser.email}</p>
+                <p className="text-sm font-semibold text-text-primary">{currentUser?.name || "Active User"}</p>
+                <p className="text-xs text-text-secondary truncate">{currentUser?.email || "user@insightflow.ai"}</p>
                 <div className="flex items-center space-x-2 mt-2">
                   <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-primary text-white uppercase">
-                    {currentUser.role}
+                    {currentUser?.role || "GUEST"}
                   </span>
                   <span className="text-[11px] text-text-muted">Acme Org Hub</span>
                 </div>

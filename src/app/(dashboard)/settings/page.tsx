@@ -26,7 +26,7 @@ export default function SettingsAdminPage() {
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteRole, setInviteRole] = useState("ANALYST");
 
-  const isAdmin = currentUser.role === "ADMIN";
+  const isAdmin = currentUser?.role === "ADMIN";
 
   useEffect(() => {
     fetchSettings();
@@ -49,7 +49,7 @@ export default function SettingsAdminPage() {
       const res = await fetch("/api/settings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "CLEAR_CACHE", user: currentUser.name }),
+        body: JSON.stringify({ action: "CLEAR_CACHE", user: currentUser?.name || "Admin" }),
       });
       const data = await res.json();
       setCacheMessage(data.message || "Cache successfully purged.");
@@ -71,7 +71,7 @@ export default function SettingsAdminPage() {
         body: JSON.stringify({
           action: "INVITE_USER",
           payload: { email: inviteEmail, role: inviteRole, name: inviteEmail.split("@")[0] },
-          user: currentUser.name,
+          user: currentUser?.name || "Admin",
         }),
       });
       const data = await res.json();
@@ -95,7 +95,7 @@ export default function SettingsAdminPage() {
         <Lock className="w-8 h-8 text-status-danger mx-auto" />
         <h2 className="text-base font-bold text-text-primary">Administrative Access Restricted</h2>
         <p className="text-xs text-text-secondary">
-          Your current role (<strong>{currentUser.role}</strong>) does not have permission to modify system configuration or manage organization members. Switch to <strong>ADMIN</strong> using the header role switcher to explore this panel.
+          Your current authenticated role (<strong>{currentUser?.role || "GUEST"}</strong>) does not have administrative privileges to modify system configuration or manage workspace security policies. Contact your workspace administrator for elevated access.
         </p>
       </div>
     );

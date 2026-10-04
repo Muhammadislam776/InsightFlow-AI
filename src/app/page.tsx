@@ -82,7 +82,7 @@ export default function LandingPage() {
             </Link>
 
             <Link
-              href="/overview"
+              href="/signup"
               className="px-5 py-2 text-xs font-bold text-white bg-[#F97316] hover:bg-[#EA580C] rounded-full shadow-[0_4px_14px_rgba(249,115,22,0.35)] hover:shadow-[0_6px_20px_rgba(249,115,22,0.45)] transition-all transform hover:-translate-y-0.5"
             >
               Get Started

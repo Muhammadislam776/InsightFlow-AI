@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { User, UserRole, QueryExecutionResult } from "@/lib/types";
 import { supabase } from "@/lib/supabase/client";
+import { authService, getRegisteredAccounts } from "@/lib/auth/authService";
 
 interface NotificationItem {
   id: string;
@@ -14,7 +15,9 @@ interface NotificationItem {
 }
 
 interface AppContextType {
-  currentUser: User;
+  currentUser: User | null;
+  isAuthenticated: boolean;
+  authLoading: boolean;
   switchRole: (role: UserRole) => void;
   activeQueryResult: QueryExecutionResult | null;
   setActiveQueryResult: (result: QueryExecutionResult | null) => void;
@@ -25,39 +28,18 @@ interface AppContextType {
   setSearchOpen: (open: boolean) => void;
   favoriteDashboardIds: string[];
   toggleFavoriteDashboard: (id: string) => void;
+  login: (email: string, password: string) => Promise<{ success: boolean; user: User }>;
+  signup: (data: {
+    name: string;
+    email: string;
+    organization: string;
+    role: UserRole;
+    password: string;
+    confirmPassword?: string;
+  }) => Promise<{ success: boolean; user: User; message: string }>;
   signOut: () => Promise<void>;
   isSupabaseAuth: boolean;
 }
-
-const DEFAULT_USERS: Record<UserRole, User> = {
-  ADMIN: {
-    id: "usr_admin_1",
-    organizationId: "org_acme_bi",
-    name: "Alex Vance",
-    email: "alex.vance@insightflow.ai",
-    role: "ADMIN",
-    status: "active",
-    createdAt: "2024-01-15",
-  },
-  ANALYST: {
-    id: "usr_analyst_2",
-    organizationId: "org_acme_bi",
-    name: "Elena Rostova",
-    email: "elena.r@insightflow.ai",
-    role: "ANALYST",
-    status: "active",
-    createdAt: "2024-02-10",
-  },
-  VIEWER: {
-    id: "usr_viewer_3",
-    organizationId: "org_acme_bi",
-    name: "David Chen",
-    email: "d.chen@insightflow.ai",
-    role: "VIEWER",
-    status: "active",
-    createdAt: "2024-03-01",
-  },
-};
 
 const INITIAL_NOTIFICATIONS: NotificationItem[] = [
   {
@@ -79,7 +61,7 @@ const INITIAL_NOTIFICATIONS: NotificationItem[] = [
   {
     id: "notif_3",
     title: "Executive Dashboard Shared",
-    description: "Alex Vance shared 'Executive Summary' with your workspace.",
+    description: "Executive Summary shared with your workspace.",
     time: "2 hours ago",
     type: "info",
     read: true,
@@ -89,7 +71,8 @@ const INITIAL_NOTIFICATIONS: NotificationItem[] = [
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [currentUser, setCurrentUser] = useState<User>(DEFAULT_USERS.ADMIN);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [isSupabaseAuth, setIsSupabaseAuth] = useState(false);
   const [activeQueryResult, setActiveQueryResult] = useState<QueryExecutionResult | null>(null);
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
@@ -99,59 +82,108 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     "dash_customer_analytics",
   ]);
 
-  // Sync Supabase Auth session on mount and changes
+  // Load existing session on mount
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        syncUserFromSupabase(session.user);
-      }
-    });
+    let mounted = true;
 
+    async function checkAuthSession() {
+      try {
+        // 1. Check local session storage first
+        const activeLocal = authService.getActiveSession();
+        if (activeLocal && mounted) {
+          setCurrentUser(activeLocal);
+        }
+
+        // 2. Check Supabase Auth
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user && mounted) {
+          const meta = session.user.user_metadata || {};
+          const matched = getRegisteredAccounts().find(
+            (a) => a.email.toLowerCase() === (session.user.email || "").toLowerCase()
+          );
+
+          const syncd: User = {
+            id: session.user.id,
+            organizationId: meta.organization || "org_insightflow",
+            name: meta.name || session.user.email?.split("@")[0] || "Active User",
+            email: session.user.email || "",
+            role: (meta.role as UserRole) || matched?.role || "ANALYST",
+            status: "active",
+            createdAt: session.user.created_at?.split("T")[0] || "2026-10-04",
+          };
+          setCurrentUser(syncd);
+          setIsSupabaseAuth(true);
+          authService.saveActiveSession(syncd);
+        }
+      } catch (err) {
+        console.warn("Session check exception:", err);
+      } finally {
+        if (mounted) setAuthLoading(false);
+      }
+    }
+
+    checkAuthSession();
+
+    // Listen to Supabase auth state change
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!mounted) return;
       if (session?.user) {
-        syncUserFromSupabase(session.user);
+        const meta = session.user.user_metadata || {};
+        const matched = getRegisteredAccounts().find(
+          (a) => a.email.toLowerCase() === (session.user.email || "").toLowerCase()
+        );
+        const syncd: User = {
+          id: session.user.id,
+          organizationId: meta.organization || "org_insightflow",
+          name: meta.name || session.user.email?.split("@")[0] || "Active User",
+          email: session.user.email || "",
+          role: (meta.role as UserRole) || matched?.role || "ANALYST",
+          status: "active",
+          createdAt: session.user.created_at?.split("T")[0] || "2026-10-04",
+        };
+        setCurrentUser(syncd);
+        setIsSupabaseAuth(true);
+        authService.saveActiveSession(syncd);
       } else {
         setIsSupabaseAuth(false);
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
-  const syncUserFromSupabase = (sbUser: any) => {
-    const meta = sbUser.user_metadata || {};
-    const role: UserRole = (meta.role as UserRole) || "ANALYST";
-    const name: string = meta.name || sbUser.email?.split("@")[0] || "Active User";
-
-    setCurrentUser({
-      id: sbUser.id,
-      organizationId: meta.organization || "org_acme_bi",
-      name,
-      email: sbUser.email || "",
-      role,
-      status: "active",
-      createdAt: sbUser.created_at ? sbUser.created_at.split("T")[0] : "2026-10-04",
-    });
-    setIsSupabaseAuth(true);
+  const login = async (email: string, pass: string) => {
+    const res = await authService.login(email, pass);
+    setCurrentUser(res.user);
+    return res;
   };
 
-  const switchRole = (role: UserRole) => {
-    setCurrentUser((prev) => ({
-      ...prev,
-      role,
-      name: DEFAULT_USERS[role]?.name || prev.name,
-      email: DEFAULT_USERS[role]?.email || prev.email,
-    }));
+  const signup = async (data: {
+    name: string;
+    email: string;
+    organization: string;
+    role: UserRole;
+    password: string;
+    confirmPassword?: string;
+  }) => {
+    const res = await authService.signup(data);
+    return res;
   };
 
   const signOut = async () => {
-    try {
-      await supabase.auth.signOut();
-    } catch (e) {
-      console.error(e);
-    }
-    setCurrentUser(DEFAULT_USERS.ANALYST);
+    await authService.logout();
+    setCurrentUser(null);
     setIsSupabaseAuth(false);
+  };
+
+  const switchRole = (role: UserRole) => {
+    if (!currentUser) return;
+    const updated = { ...currentUser, role };
+    setCurrentUser(updated);
+    authService.saveActiveSession(updated);
   };
 
   const markNotificationsAsRead = () => {
@@ -170,6 +202,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     <AppContext.Provider
       value={{
         currentUser,
+        isAuthenticated: !!currentUser,
+        authLoading,
         switchRole,
         activeQueryResult,
         setActiveQueryResult,
@@ -180,6 +214,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setSearchOpen,
         favoriteDashboardIds,
         toggleFavoriteDashboard,
+        login,
+        signup,
         signOut,
         isSupabaseAuth,
       }}

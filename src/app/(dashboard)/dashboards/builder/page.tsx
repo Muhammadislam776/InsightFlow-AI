@@ -95,6 +95,20 @@ export default function DashboardBuilderPage() {
     }
   };
 
+  if (currentUser?.role === "VIEWER") {
+    return (
+      <div className="p-12 rounded-2xl border border-border bg-white text-center max-w-lg mx-auto space-y-3">
+        <h2 className="text-base font-bold text-text-primary">Dashboard Creation Restricted</h2>
+        <p className="text-xs text-text-secondary">
+          Viewer accounts have read-only access and cannot build or publish new dashboards.
+        </p>
+        <Link href="/dashboards" className="text-xs font-bold text-primary hover:underline block pt-2">
+          ← Return to Dashboards
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
       {/* Top Header */}

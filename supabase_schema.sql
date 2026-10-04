@@ -6,7 +6,19 @@
 -- 1. Enable UUID Extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- 2. User Profiles Table (Linked to Supabase Auth)
+-- 2. Dedicated Users Table & User Profiles Table (RBAC Authentication & Authorization)
+CREATE TABLE IF NOT EXISTS public.users (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name TEXT NOT NULL,
+  email TEXT NOT NULL UNIQUE,
+  password_hash TEXT,
+  role TEXT NOT NULL CHECK (role IN ('ADMIN', 'ANALYST', 'VIEWER')) DEFAULT 'ANALYST',
+  organization TEXT DEFAULT 'Acme Enterprises',
+  status TEXT DEFAULT 'active' CHECK (status IN ('active', 'suspended', 'pending')),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS public.user_profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
@@ -18,10 +30,11 @@ CREATE TABLE IF NOT EXISTS public.user_profiles (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Automatic trigger to populate user_profiles when a new user signs up in auth.users
+-- Automatic trigger to populate public.users and user_profiles when a new user signs up in auth.users
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
+  -- Insert into user_profiles
   INSERT INTO public.user_profiles (id, name, email, role, organization)
   VALUES (
     NEW.id,
@@ -33,6 +46,21 @@ BEGIN
   ON CONFLICT (id) DO UPDATE SET
     name = EXCLUDED.name,
     role = EXCLUDED.role;
+
+  -- Insert/Sync into public.users table
+  INSERT INTO public.users (id, name, email, role, organization, status)
+  VALUES (
+    NEW.id,
+    COALESCE(NEW.raw_user_meta_data->>'name', split_part(NEW.email, '@', 1)),
+    NEW.email,
+    COALESCE(NEW.raw_user_meta_data->>'role', 'ANALYST'),
+    COALESCE(NEW.raw_user_meta_data->>'organization', 'Acme Enterprises'),
+    'active'
+  )
+  ON CONFLICT (email) DO UPDATE SET
+    name = EXCLUDED.name,
+    role = EXCLUDED.role;
+
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -41,6 +69,13 @@ DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT OR UPDATE ON auth.users
   FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
+
+-- Seed Default Accounts into public.users
+INSERT INTO public.users (name, email, role, organization, status) VALUES
+  ('Alex Vance', 'alex.vance@insightflow.ai', 'ADMIN', 'InsightFlow Enterprise', 'active'),
+  ('Elena Rostova', 'elena.r@insightflow.ai', 'ANALYST', 'InsightFlow Enterprise', 'active'),
+  ('David Chen', 'd.chen@insightflow.ai', 'VIEWER', 'InsightFlow Enterprise', 'active')
+ON CONFLICT (email) DO NOTHING;
 
 -- 3. Business Analytics Tables
 

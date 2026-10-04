@@ -13,8 +13,10 @@ import {
   Zap,
 } from "lucide-react";
 import { BenchmarkCase } from "@/lib/types";
+import { useApp } from "@/context/AppContext";
 
 export default function BenchmarksPage() {
+  const { currentUser } = useApp();
   const [summary, setSummary] = useState<any>({
     accuracyRate: 98.4,
     safetyPassRate: 100.0,
@@ -35,6 +37,17 @@ export default function BenchmarksPage() {
       })
       .catch((e) => console.error(e));
   }, []);
+
+  if (currentUser?.role === "VIEWER") {
+    return (
+      <div className="p-12 rounded-2xl border border-border bg-white text-center max-w-lg mx-auto space-y-3">
+        <h2 className="text-base font-bold text-text-primary">Benchmarks Access Restricted</h2>
+        <p className="text-xs text-text-secondary">
+          Accuracy benchmarks and safety test suites are restricted to ADMIN and ANALYST accounts.
+        </p>
+      </div>
+    );
+  }
 
   const handleRunBenchmarks = async () => {
     setRunning(true);

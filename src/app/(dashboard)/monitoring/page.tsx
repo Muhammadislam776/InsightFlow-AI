@@ -27,7 +27,10 @@ import {
   Tooltip,
 } from "recharts";
 
+import { useApp } from "@/context/AppContext";
+
 export default function UsageMonitoringPage() {
+  const { currentUser } = useApp();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -40,6 +43,17 @@ export default function UsageMonitoringPage() {
       })
       .catch((err) => console.error(err));
   }, []);
+
+  if (currentUser?.role === "VIEWER") {
+    return (
+      <div className="p-12 rounded-2xl border border-border bg-white text-center max-w-lg mx-auto space-y-3">
+        <h2 className="text-base font-bold text-text-primary">Telemetry Access Restricted</h2>
+        <p className="text-xs text-text-secondary">
+          System telemetry and query monitoring are restricted to ADMIN and ANALYST accounts.
+        </p>
+      </div>
+    );
+  }
 
   if (loading || !data) {
     return <div className="p-12 text-center text-xs text-text-muted">Loading telemetry & security metrics...</div>;

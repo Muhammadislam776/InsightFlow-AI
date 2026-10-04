@@ -24,11 +24,11 @@ export default function DataCatalogPage() {
 
   useEffect(() => {
     fetchCatalog();
-  }, [search, currentUser.role]);
+  }, [search, currentUser?.role]);
 
   const fetchCatalog = async () => {
     try {
-      const res = await fetch(`/api/catalog?search=${encodeURIComponent(search)}&role=${currentUser.role}`);
+      const res = await fetch(`/api/catalog?search=${encodeURIComponent(search)}&role=${currentUser?.role || "ANALYST"}`);
       const data = await res.json();
       setCatalog(data.catalog || []);
     } catch (e) {
@@ -54,7 +54,7 @@ export default function DataCatalogPage() {
         </div>
         <div className="flex items-center space-x-2 text-xs">
           <span className="px-2.5 py-1 rounded-xl bg-blue-50 text-primary border border-blue-200 font-bold">
-            Role: {currentUser.role} View
+            Role: {currentUser?.role || "GUEST"} View
           </span>
         </div>
       </div>

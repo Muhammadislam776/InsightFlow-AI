@@ -20,7 +20,7 @@ export default function ExplorePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           question,
-          role: currentUser.role,
+          role: currentUser?.role || "ANALYST",
         }),
       });
       const data = await res.json();

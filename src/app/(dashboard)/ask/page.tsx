@@ -59,7 +59,7 @@ function AskDataContent() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           question: trimmed,
-          role: currentUser.role,
+          role: currentUser?.role || "ANALYST",
           previousContext: activeQueryResult
             ? { question: activeQueryResult.question, sql: activeQueryResult.generatedSql }
             : undefined,

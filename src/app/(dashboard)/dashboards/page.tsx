@@ -56,7 +56,7 @@ export default function DashboardsListPage() {
           </p>
         </div>
 
-        {currentUser.role !== "VIEWER" && (
+        {currentUser?.role !== "VIEWER" && (
           <Link
             href="/dashboards/builder"
             className="inline-flex items-center space-x-1.5 px-4 py-2.5 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary-hover shadow-subtle transition-all"

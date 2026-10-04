@@ -28,17 +28,17 @@ export default function ProfilePage() {
       <div className="rounded-2xl border border-border bg-surface p-6 shadow-card space-y-6">
         <div className="flex items-center space-x-4">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-primary to-blue-400 flex items-center justify-center text-white text-xl font-bold shadow-card">
-            {currentUser.name
+            {(currentUser?.name || "User")
               .split(" ")
               .map((n) => n[0])
               .join("")}
           </div>
           <div>
-            <h3 className="text-base font-bold text-text-primary">{currentUser.name}</h3>
-            <p className="text-xs text-text-secondary">{currentUser.email}</p>
+            <h3 className="text-base font-bold text-text-primary">{currentUser?.name || "Active User"}</h3>
+            <p className="text-xs text-text-secondary">{currentUser?.email || ""}</p>
             <div className="flex items-center space-x-2 mt-2">
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-primary text-white">
-                {currentUser.role}
+                {currentUser?.role || "GUEST"}
               </span>
               <span className="text-xs text-text-muted">Acme Enterprises BI Hub</span>
             </div>
@@ -50,7 +50,7 @@ export default function ProfilePage() {
             <label className="font-semibold text-text-secondary block mb-1">Full Name</label>
             <input
               type="text"
-              defaultValue={currentUser.name}
+              defaultValue={currentUser?.name || ""}
               className="w-full px-3 py-2 bg-background border border-border rounded-xl text-text-primary outline-hidden focus:border-primary"
             />
           </div>
@@ -60,7 +60,7 @@ export default function ProfilePage() {
             <input
               type="email"
               disabled
-              defaultValue={currentUser.email}
+              defaultValue={currentUser?.email || ""}
               className="w-full px-3 py-2 bg-slate-50 border border-border rounded-xl text-text-muted"
             />
           </div>
@@ -69,12 +69,12 @@ export default function ProfilePage() {
             <label className="font-semibold text-text-secondary block mb-1">Role & Permissions</label>
             <div className="p-3 bg-blue-50/60 rounded-xl border border-blue-200">
               <p className="font-bold text-primary">
-                Assigned Role: {currentUser.role}
+                Assigned Role: {currentUser?.role || "GUEST"}
               </p>
               <p className="text-text-secondary mt-1">
-                {currentUser.role === "ADMIN"
+                {currentUser?.role === "ADMIN"
                   ? "Full administrative control over schema, users, and cache."
-                  : currentUser.role === "ANALYST"
+                  : currentUser?.role === "ANALYST"
                   ? "Permission to ask questions, create queries, build dashboards, and export CSVs."
                   : "Read-only access to approved metrics and team dashboards."}
               </p>
