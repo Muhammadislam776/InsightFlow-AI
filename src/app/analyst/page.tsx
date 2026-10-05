@@ -13,6 +13,8 @@ import {
   Database,
   Clock,
   CheckCircle2,
+  Cpu,
+  FileSpreadsheet,
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 
@@ -28,15 +30,15 @@ export default function AnalystHubPage() {
   ];
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
+    <div className="space-y-8 animate-in fade-in duration-200">
       {/* Top Banner */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2 border-b border-[#E2E8F0]">
         <div>
           <div className="flex items-center space-x-2 text-xs font-bold text-[#2563EB] mb-1">
             <Sparkles className="w-4 h-4 text-[#F97316]" />
-            <span>Analyst Studio Active</span>
+            <span className="uppercase tracking-wider">Analyst Intelligence Studio</span>
           </div>
-          <h1 className="text-2xl font-black tracking-tight text-[#111827]">
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#111827]">
             Welcome to the Analytics Studio, {currentUser?.name?.split(" ")[0]} 🚀
           </h1>
           <p className="text-xs sm:text-sm text-[#64748B] mt-0.5">
@@ -58,6 +60,49 @@ export default function AnalystHubPage() {
           >
             + Build Dashboard
           </Link>
+        </div>
+      </div>
+
+      {/* Visual AI Analytics Studio Showcase Hero */}
+      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white shadow-xl">
+        <div className="grid grid-cols-1 lg:grid-cols-12 items-center">
+          <div className="lg:col-span-7 p-6 sm:p-8 space-y-4 z-10">
+            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-blue-200 text-xs font-bold">
+              <Cpu className="w-3.5 h-3.5 text-orange-400" />
+              <span>Natural-Language to SQL • Read-Only Verified</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-black leading-tight text-white">
+              Instant Natural-Language Queries Grounded in Real Schemas
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-200 leading-relaxed max-w-xl">
+              Type any metric inquiry in plain English. The AI engine transparently translates your question into deterministic SQL, verifies column types against the catalog, and generates clean interactive charts.
+            </p>
+            <div className="pt-2 flex flex-wrap items-center gap-3">
+              <Link
+                href="/analyst/ask-studio"
+                className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold transition-all shadow-md shadow-orange-500/30"
+              >
+                <span>Ask Data Now</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+              <Link
+                href="/analyst/explore"
+                className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-semibold backdrop-blur-md transition-all border border-white/20"
+              >
+                <SearchCode className="w-3.5 h-3.5" />
+                <span>SQL Inspector</span>
+              </Link>
+            </div>
+          </div>
+
+          <div className="lg:col-span-5 h-52 lg:h-full relative overflow-hidden">
+            <img
+              src="/images/ai-analytics-hero.jpg"
+              alt="AI Analytics & Natural Language BI"
+              className="w-full h-full object-cover object-center opacity-90 hover:opacity-100 transition-opacity duration-300"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-blue-900/90 via-transparent to-transparent" />
+          </div>
         </div>
       </div>
 
@@ -89,7 +134,7 @@ export default function AnalystHubPage() {
       </div>
 
       {/* Suggested Inquiries */}
-      <div className="bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-xs space-y-4">
+      <div className="bg-white p-6 rounded-3xl border border-[#E2E8F0] shadow-xs space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div className="flex items-center space-x-2">
             <Sparkles className="w-4 h-4 text-[#F97316]" />
@@ -118,12 +163,12 @@ export default function AnalystHubPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Link
           href="/analyst/explore"
-          className="bg-white p-5 rounded-2xl border border-[#E2E8F0] shadow-xs hover:border-blue-300 transition-all space-y-2 block"
+          className="bg-white p-5 rounded-2xl border border-[#E2E8F0] shadow-xs hover:border-blue-300 transition-all space-y-2 block group"
         >
           <div className="p-2.5 rounded-xl bg-blue-50 text-[#2563EB] w-fit">
             <SearchCode className="w-5 h-5" />
           </div>
-          <h3 className="text-sm font-bold text-[#111827]">SQL Transparency Explorer</h3>
+          <h3 className="text-sm font-bold text-[#111827] group-hover:text-[#2563EB]">SQL Transparency Explorer</h3>
           <p className="text-xs text-[#64748B]">
             Inspect the underlying safe SQL query generated by the AI model, review query execution plans, and verify joins.
           </p>
@@ -131,27 +176,27 @@ export default function AnalystHubPage() {
 
         <Link
           href="/analyst/builder"
-          className="bg-white p-5 rounded-2xl border border-[#E2E8F0] shadow-xs hover:border-blue-300 transition-all space-y-2 block"
+          className="bg-white p-5 rounded-2xl border border-[#E2E8F0] shadow-xs hover:border-blue-300 transition-all space-y-2 block group"
         >
           <div className="p-2.5 rounded-xl bg-orange-50 text-[#F97316] w-fit">
             <Layers className="w-5 h-5" />
           </div>
-          <h3 className="text-sm font-bold text-[#111827]">Custom Dashboard Builder</h3>
+          <h3 className="text-sm font-bold text-[#111827] group-hover:text-[#F97316]">Custom Dashboard Builder</h3>
           <p className="text-xs text-[#64748B]">
             Assemble interactive multi-chart dashboards (Bar, Line, Area, KPI) directly from natural language questions.
           </p>
         </Link>
 
         <Link
-          href="/analyst/catalog"
-          className="bg-white p-5 rounded-2xl border border-[#E2E8F0] shadow-xs hover:border-blue-300 transition-all space-y-2 block"
+          href="/analyst/export"
+          className="bg-white p-5 rounded-2xl border border-[#E2E8F0] shadow-xs hover:border-blue-300 transition-all space-y-2 block group"
         >
-          <div className="p-2.5 rounded-xl bg-purple-50 text-purple-600 w-fit">
-            <Database className="w-5 h-5" />
+          <div className="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 w-fit">
+            <FileSpreadsheet className="w-5 h-5" />
           </div>
-          <h3 className="text-sm font-bold text-[#111827]">Semantic Data Catalog</h3>
+          <h3 className="text-sm font-bold text-[#111827] group-hover:text-emerald-700">Dataset Export Pipeline</h3>
           <p className="text-xs text-[#64748B]">
-            Explore approved tables, column data types, business descriptions, and calculate KPI dimensions.
+            Export verified query datasets into CSV, JSON, and spreadsheet formats with strict column governance.
           </p>
         </Link>
       </div>

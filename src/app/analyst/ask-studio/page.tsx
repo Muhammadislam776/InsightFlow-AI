@@ -16,6 +16,9 @@ import {
   CheckCircle2,
   AlertCircle,
   Copy,
+  Cpu,
+  BarChart3,
+  Layers,
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { QueryExecutionResult } from "@/lib/types";
@@ -68,13 +71,13 @@ function AskStudioContent() {
       <div className="pb-2 border-b border-[#E2E8F0]">
         <div className="flex items-center space-x-2 text-xs font-bold text-[#F97316] mb-1">
           <Sparkles className="w-4 h-4" />
-          <span>Analyst AI Natural Language Engine</span>
+          <span className="uppercase tracking-wider">Analyst AI Natural Language Engine</span>
         </div>
-        <h1 className="text-2xl font-black tracking-tight text-[#111827]">
+        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#111827]">
           Ask Data Studio
         </h1>
         <p className="text-xs sm:text-sm text-[#64748B] mt-0.5">
-          Type queries in natural business English. The studio maps your question to safe SQL, computes live metrics, and renders charts.
+          Type queries in natural business English. The studio maps your question to safe SQL, computes live metrics, and renders interactive charts.
         </p>
       </div>
 
@@ -112,9 +115,10 @@ function AskStudioContent() {
           <span className="text-[11px] font-bold text-[#64748B]">Try asking:</span>
           {[
             "Top 10 products by sales",
-            "Show monthly revenue for last 12 months",
+            "Show monthly revenue for the last 12 months",
             "Compare sales between regions",
-            "Customer lifetime value distribution",
+            "Which products generated the highest revenue?",
+            "Show me top 10 customers by revenue",
           ].map((prompt, i) => (
             <button
               key={i}
@@ -123,9 +127,9 @@ function AskStudioContent() {
                 setQuestion(prompt);
                 handleExecuteQuery(prompt);
               }}
-              className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-[#2563EB] transition-colors text-[11px] font-medium"
+              className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-[#2563EB] border border-slate-200 hover:border-blue-300 transition-all text-xs font-medium"
             >
-              {prompt}
+              "{prompt}"
             </button>
           ))}
         </div>
@@ -145,6 +149,45 @@ function AskStudioContent() {
       {/* Result Display */}
       {activeQueryResult && !loading && (
         <QueryResultView result={activeQueryResult} />
+      )}
+
+      {/* Empty State / AI Architecture Showcase */}
+      {!activeQueryResult && !loading && (
+        <div className="bg-white rounded-3xl border border-[#E2E8F0] overflow-hidden shadow-xs">
+          <div className="grid grid-cols-1 lg:grid-cols-12 items-center">
+            <div className="lg:col-span-6 p-8 space-y-4">
+              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-[#2563EB] text-xs font-bold">
+                <Cpu className="w-3.5 h-3.5" />
+                <span>Deterministic AST Translation Pipeline</span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 leading-snug">
+                How Natural-Language Queries Become Certified SQL & Charts
+              </h2>
+              <div className="space-y-3 text-xs text-[#64748B]">
+                <div className="flex items-start space-x-3">
+                  <div className="w-6 h-6 rounded-full bg-blue-100 text-[#2563EB] flex items-center justify-center font-bold shrink-0">1</div>
+                  <p><strong className="text-slate-800">Natural-Language Intent:</strong> Your business question is parsed into structured semantic dimensions and metric aggregations.</p>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="w-6 h-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold shrink-0">2</div>
+                  <p><strong className="text-slate-800">AST Security Validation:</strong> Queries are restricted to SELECT statements with enforced LIMIT clauses and catalog masking.</p>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold shrink-0">3</div>
+                  <p><strong className="text-slate-800">Visual Synthesis:</strong> Results render automatically as Bar, Line, Area, or KPI tiles with narrative summaries.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:col-span-6 h-72 lg:h-96 relative bg-slate-50 overflow-hidden border-t lg:border-t-0 lg:border-l border-slate-100">
+              <img
+                src="/images/nlp-query-studio.jpg"
+                alt="NLP to SQL AI Engine Workflow"
+                className="w-full h-full object-cover object-center"
+              />
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

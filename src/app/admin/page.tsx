@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import {
   ShieldAlert,
@@ -16,6 +16,8 @@ import {
   CheckCircle2,
   AlertTriangle,
   RefreshCw,
+  Sliders,
+  ExternalLink,
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 
@@ -58,35 +60,77 @@ export default function AdminCommandCenter() {
   ]);
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
+    <div className="space-y-8 animate-in fade-in duration-200">
       {/* Top Banner */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2 border-b border-[#E2E8F0]">
         <div>
           <div className="flex items-center space-x-2 text-xs font-bold text-[#1E3A8A] mb-1">
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            <span>Root Governance Active</span>
+            <span className="uppercase tracking-wider">Root Governance & Security Center</span>
           </div>
-          <h1 className="text-2xl font-black tracking-tight text-[#111827]">
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#111827]">
             Admin Command Center
           </h1>
           <p className="text-xs sm:text-sm text-[#64748B] mt-0.5">
-            Full enterprise oversight of data governance, security guardrails, RBAC policies, and telemetry.
+            Full enterprise oversight of data governance, SQL safety guardrails, RBAC policies, and live telemetry.
           </p>
         </div>
 
         <div className="flex items-center space-x-2">
           <Link
             href="/admin/governance"
-            className="px-3.5 py-2 rounded-xl bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-bold transition-all shadow-xs"
+            className="px-4 py-2.5 rounded-xl bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-bold transition-all shadow-xs"
           >
             Manage Schema Catalog
           </Link>
           <Link
             href="/admin/security-guard"
-            className="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all shadow-xs"
+            className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all shadow-xs"
           >
             Threat Guard
           </Link>
+        </div>
+      </div>
+
+      {/* Visual Enterprise Security Hero Banner */}
+      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 text-white shadow-xl">
+        <div className="grid grid-cols-1 lg:grid-cols-12 items-center">
+          <div className="lg:col-span-7 p-6 sm:p-8 space-y-4 z-10">
+            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-emerald-300 text-xs font-bold">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <span>SQL AST Safety Shield Active • 100% Read-Only</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-black leading-tight text-white">
+              Enterprise Data Governance & Threat Interception
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-200 leading-relaxed max-w-xl">
+              All incoming natural-language prompts and raw SQL queries pass through an AST validator before execution. Destructive DDL commands, schema tampering, and cross-tenant leaks are quarantined in real time.
+            </p>
+            <div className="pt-2 flex flex-wrap items-center gap-3">
+              <Link
+                href="/admin/security-guard"
+                className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-md shadow-emerald-600/30"
+              >
+                <span>Open Threat Playground</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+              <Link
+                href="/admin/audit-logs"
+                className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-semibold backdrop-blur-md transition-all border border-white/20"
+              >
+                <span>View Compliance Logs</span>
+              </Link>
+            </div>
+          </div>
+
+          <div className="lg:col-span-5 h-52 lg:h-full relative overflow-hidden">
+            <img
+              src="/images/security-governance.jpg"
+              alt="Data Security & Governance Shield"
+              className="w-full h-full object-cover object-center opacity-90 hover:opacity-100 transition-opacity duration-300"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-slate-900/90 via-transparent to-transparent" />
+          </div>
         </div>
       </div>
 
@@ -163,7 +207,7 @@ export default function AdminCommandCenter() {
                   </p>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-rose-600 text-white">
+                  <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-rose-600 text-white shadow-xs">
                     {threat.status}
                   </span>
                 </div>

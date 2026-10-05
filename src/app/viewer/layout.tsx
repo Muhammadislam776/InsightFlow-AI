@@ -14,6 +14,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Eye,
+  ShieldCheck,
+  CheckCircle2,
 } from "lucide-react";
 
 const VIEWER_NAV = [
@@ -52,28 +54,29 @@ export default function ViewerLayout({ children }: { children: React.ReactNode }
   return (
     <div className="flex min-h-screen flex-col bg-[#F8FAFC] font-sans antialiased text-[#111827]">
       {/* Viewer Header */}
-      <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-[#E2E8F0] bg-white px-6 shadow-xs">
+      <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-[#E2E8F0] bg-white/95 backdrop-blur-md px-6 shadow-xs">
         <div className="flex items-center space-x-3">
-          <Link href="/viewer" className="flex items-center space-x-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-sm">
+          <Link href="/viewer" className="flex items-center space-x-2.5 group">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-[#2563EB] to-blue-500 text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
               <Eye className="h-5 w-5" />
             </div>
             <div className="flex flex-col">
               <span className="text-base font-black tracking-tight text-[#111827]">
-                InsightFlow <span className="text-emerald-600">VIEWER</span>
+                InsightFlow <span className="text-[#2563EB]">VIEWER</span>
               </span>
             </div>
           </Link>
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-            Executive Read-Only Portal
+          <span className="hidden sm:inline-flex items-center space-x-1 px-3 py-1 rounded-full text-[10px] font-bold bg-blue-50 text-[#2563EB] border border-blue-200">
+            <ShieldCheck className="w-3 h-3 text-[#2563EB]" />
+            <span>Executive Read-Only Portal</span>
           </span>
         </div>
 
         <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2.5 pl-3">
+          <div className="flex items-center space-x-3 pl-3">
             <div className="text-right hidden sm:block">
               <p className="text-xs font-bold text-[#111827]">{currentUser.name}</p>
-              <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200 uppercase">
+              <span className="text-[10px] font-bold text-[#2563EB] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200 uppercase">
                 {currentUser.role}
               </span>
             </div>
@@ -82,7 +85,7 @@ export default function ViewerLayout({ children }: { children: React.ReactNode }
                 await signOut();
                 router.push("/login");
               }}
-              className="p-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors"
+              className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
               title="Sign Out"
             >
               <LogOut className="w-4 h-4" />
@@ -99,7 +102,7 @@ export default function ViewerLayout({ children }: { children: React.ReactNode }
             collapsed ? "w-20" : "w-64"
           }`}
         >
-          <div className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
+          <div className="flex-1 overflow-y-auto px-3 py-5 space-y-1.5">
             {!collapsed && (
               <p className="px-3 mb-2 text-[10px] font-black tracking-wider text-[#94A3B8] uppercase">
                 Executive Views
@@ -112,10 +115,10 @@ export default function ViewerLayout({ children }: { children: React.ReactNode }
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center rounded-xl px-3 py-2.5 text-xs font-semibold transition-all ${
+                  className={`flex items-center rounded-2xl px-3.5 py-3 text-xs font-semibold transition-all ${
                     isActive
-                      ? "bg-emerald-600 text-white shadow-xs font-bold"
-                      : "text-[#64748B] hover:bg-slate-100 hover:text-[#111827]"
+                      ? "bg-[#2563EB] text-white shadow-md shadow-blue-500/20 font-bold"
+                      : "text-[#64748B] hover:bg-slate-50 hover:text-[#111827]"
                   }`}
                   title={collapsed ? item.name : undefined}
                 >
@@ -139,7 +142,7 @@ export default function ViewerLayout({ children }: { children: React.ReactNode }
         </aside>
 
         {/* Content Area */}
-        <main className="flex-1 overflow-y-auto px-6 py-6 md:px-8">
+        <main className="flex-1 overflow-y-auto px-6 py-8 md:px-10">
           <div className="mx-auto max-w-7xl">{children}</div>
         </main>
       </div>
