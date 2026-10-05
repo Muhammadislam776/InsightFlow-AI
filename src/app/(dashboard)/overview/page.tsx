@@ -106,6 +106,36 @@ export default function OverviewPage() {
 
         {/* Quick Action Pill Buttons matching mockup #3 */}
         <div className="flex flex-wrap items-center gap-2">
+          {currentUser?.role === "ADMIN" && (
+            <Link
+              href="/admin"
+              className="px-3.5 py-2 rounded-xl bg-[#1E3A8A] hover:bg-[#172554] text-xs font-bold text-white flex items-center space-x-1.5 shadow-xs transition-colors"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-blue-200" />
+              <span>Admin Portal →</span>
+            </Link>
+          )}
+
+          {currentUser?.role === "ANALYST" && (
+            <Link
+              href="/analyst"
+              className="px-3.5 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-xs font-bold text-white flex items-center space-x-1.5 shadow-xs transition-colors"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Analyst Studio →</span>
+            </Link>
+          )}
+
+          {currentUser?.role === "VIEWER" && (
+            <Link
+              href="/viewer"
+              className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-xs font-bold text-white flex items-center space-x-1.5 shadow-xs transition-colors"
+            >
+              <BarChart3 className="w-3.5 h-3.5" />
+              <span>Executive Cockpit →</span>
+            </Link>
+          )}
+
           {currentUser?.role !== "VIEWER" && (
             <Link
               href="/dashboards/builder"

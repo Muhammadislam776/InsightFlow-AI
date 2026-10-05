@@ -58,9 +58,17 @@ function LoginContent() {
       const result = await login(email, password);
 
       if (result.success) {
-        setNoticeMsg(`Welcome back, ${result.user.name}! Redirecting to dashboard...`);
+        // Automatically route user to their dedicated role portal
+        let targetPortal = "/overview";
+        if (result.user.role === "ADMIN") targetPortal = "/admin";
+        else if (result.user.role === "ANALYST") targetPortal = "/analyst";
+        else if (result.user.role === "VIEWER") targetPortal = "/viewer";
+
+        const destination = redirectPath && redirectPath !== "/overview" ? redirectPath : targetPortal;
+
+        setNoticeMsg(`Welcome back, ${result.user.name}! Redirecting to ${result.user.role} portal...`);
         setTimeout(() => {
-          router.push(redirectPath);
+          router.push(destination);
         }, 500);
       }
     } catch (err: any) {
