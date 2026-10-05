@@ -141,27 +141,80 @@ export function Header() {
               setProfileMenuOpen(!profileMenuOpen);
               setNotifMenuOpen(false);
             }}
-            className="flex items-center space-x-2 p-1.5 rounded-xl hover:bg-background border border-transparent hover:border-border transition-all"
+            className="flex items-center space-x-2 p-1 pl-1.5 pr-2.5 rounded-full hover:bg-slate-100 border border-slate-200 hover:border-slate-300 transition-all shadow-2xs group"
           >
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-primary to-blue-400 flex items-center justify-center text-white text-xs font-bold shadow-subtle">
-              {(currentUser?.name || "User")
-                .split(" ")
-                .map((n) => n[0])
-                .join("")}
+            <div className="relative">
+              <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-blue-500/20 shadow-xs bg-slate-200">
+                <img
+                  src={
+                    currentUser?.role === "ADMIN"
+                      ? "/images/avatar-admin.jpg"
+                      : currentUser?.role === "VIEWER"
+                      ? "/images/avatar-viewer.jpg"
+                      : "/images/avatar-analyst.jpg"
+                  }
+                  alt={currentUser?.name || "User Avatar"}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white" />
             </div>
-            <ChevronDown className="w-4 h-4 text-text-secondary" />
+
+            <div className="text-left hidden sm:flex flex-col pr-1">
+              <span className="text-xs font-bold text-[#111827] leading-tight">
+                {currentUser?.name || "Member"}
+              </span>
+              <span className="text-[10px] font-semibold text-slate-500 leading-tight">
+                {currentUser?.role === "ADMIN" ? "Administrator" : currentUser?.role === "VIEWER" ? "Executive Viewer" : "Data Analyst"}
+              </span>
+            </div>
+
+            <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase border ${
+              currentUser?.role === "ADMIN"
+                ? "bg-rose-50 text-rose-700 border-rose-200"
+                : currentUser?.role === "VIEWER"
+                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                : "bg-blue-50 text-[#2563EB] border-blue-200"
+            }`}>
+              {currentUser?.role || "GUEST"}
+            </span>
+
+            <ChevronDown className="w-3.5 h-3.5 text-text-secondary group-hover:text-text-primary transition-colors" />
           </button>
 
           {profileMenuOpen && (
-            <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-surface border border-border shadow-elevated p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
-              <div className="p-3 border-b border-border bg-background/50 rounded-xl mb-1">
-                <p className="text-sm font-semibold text-text-primary">{currentUser?.name || "Active User"}</p>
-                <p className="text-xs text-text-secondary truncate">{currentUser?.email || "user@insightflow.ai"}</p>
-                <div className="flex items-center space-x-2 mt-2">
-                  <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-primary text-white uppercase">
-                    {currentUser?.role || "GUEST"}
+            <div className="absolute right-0 mt-2 w-72 rounded-3xl bg-white border border-slate-200 shadow-2xl p-2.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+              <div className="p-3.5 border-b border-slate-100 bg-slate-50/70 rounded-2xl mb-1.5 space-y-2.5">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 rounded-full overflow-hidden ring-2 ring-blue-500/20 shadow-sm shrink-0 bg-slate-200">
+                    <img
+                      src={
+                        currentUser?.role === "ADMIN"
+                          ? "/images/avatar-admin.jpg"
+                          : currentUser?.role === "VIEWER"
+                          ? "/images/avatar-viewer.jpg"
+                          : "/images/avatar-analyst.jpg"
+                      }
+                      alt={currentUser?.name || "Profile"}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-black text-slate-900 truncate">{currentUser?.name || "Active User"}</p>
+                    <p className="text-xs text-slate-500 truncate">{currentUser?.email || "user@insightflow.ai"}</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between pt-1">
+                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase border ${
+                    currentUser?.role === "ADMIN"
+                      ? "bg-rose-50 text-rose-700 border-rose-200"
+                      : currentUser?.role === "VIEWER"
+                      ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                      : "bg-blue-50 text-[#2563EB] border-blue-200"
+                  }`}>
+                    {currentUser?.role === "ADMIN" ? "System Admin" : currentUser?.role === "VIEWER" ? "Executive Viewer" : "Lead Data Analyst"}
                   </span>
-                  <span className="text-[11px] text-text-muted">Acme Org Hub</span>
+                  <span className="text-[10px] text-slate-500 font-medium">Acme Analytics Org</span>
                 </div>
               </div>
 

@@ -10,13 +10,10 @@ import {
   Sparkles,
   TrendingUp,
   FileText,
-  LogOut,
   ChevronLeft,
   ChevronRight,
-  Eye,
-  ShieldCheck,
-  CheckCircle2,
 } from "lucide-react";
+import { PortalHeader } from "@/components/layout/PortalHeader";
 
 const VIEWER_NAV = [
   { name: "Executive Cockpit", href: "/viewer", icon: LayoutDashboard },
@@ -29,7 +26,7 @@ const VIEWER_NAV = [
 export default function ViewerLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { currentUser, authLoading, signOut } = useApp();
+  const { currentUser, authLoading } = useApp();
   const [collapsed, setCollapsed] = React.useState(false);
 
   useEffect(() => {
@@ -53,46 +50,12 @@ export default function ViewerLayout({ children }: { children: React.ReactNode }
 
   return (
     <div className="flex min-h-screen flex-col bg-[#F8FAFC] font-sans antialiased text-[#111827]">
-      {/* Viewer Header */}
-      <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-[#E2E8F0] bg-white/95 backdrop-blur-md px-6 shadow-xs">
-        <div className="flex items-center space-x-3">
-          <Link href="/viewer" className="flex items-center space-x-2.5 group">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-[#2563EB] to-blue-500 text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
-              <Eye className="h-5 w-5" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-base font-black tracking-tight text-[#111827]">
-                InsightFlow <span className="text-[#2563EB]">VIEWER</span>
-              </span>
-            </div>
-          </Link>
-          <span className="hidden sm:inline-flex items-center space-x-1 px-3 py-1 rounded-full text-[10px] font-bold bg-blue-50 text-[#2563EB] border border-blue-200">
-            <ShieldCheck className="w-3 h-3 text-[#2563EB]" />
-            <span>Executive Read-Only Portal</span>
-          </span>
-        </div>
-
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-3 pl-3">
-            <div className="text-right hidden sm:block">
-              <p className="text-xs font-bold text-[#111827]">{currentUser.name}</p>
-              <span className="text-[10px] font-bold text-[#2563EB] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200 uppercase">
-                {currentUser.role}
-              </span>
-            </div>
-            <button
-              onClick={async () => {
-                await signOut();
-                router.push("/login");
-              }}
-              className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
-              title="Sign Out"
-            >
-              <LogOut className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </header>
+      {/* High-fidelity Portal Header with Small Circled Image Account Type */}
+      <PortalHeader
+        portalType="VIEWER"
+        portalTitle="VIEWER"
+        badgeLabel="Executive Read-Only Portal"
+      />
 
       {/* Main Body */}
       <div className="flex flex-1 overflow-hidden">

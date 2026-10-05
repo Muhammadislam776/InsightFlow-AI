@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { useApp } from "@/context/AppContext";
+import { PortalHeader } from "@/components/layout/PortalHeader";
 import {
   Sparkles,
   BarChart3,
@@ -81,53 +82,12 @@ export default function AnalystLayout({ children }: { children: React.ReactNode 
 
   return (
     <div className="flex min-h-screen flex-col bg-[#F8FAFC] font-sans antialiased text-[#111827]">
-      {/* Analyst Header */}
-      <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-[#E2E8F0] bg-white px-6 shadow-xs">
-        <div className="flex items-center space-x-3">
-          <Link href="/analyst" className="flex items-center space-x-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2563EB] text-white shadow-sm">
-              <BarChart3 className="h-5 w-5" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-base font-black tracking-tight text-[#111827]">
-                InsightFlow <span className="text-[#2563EB]">ANALYST</span>
-              </span>
-            </div>
-          </Link>
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-[#2563EB] border border-blue-200">
-            Analytics Studio & Query Lab
-          </span>
-        </div>
-
-        <div className="flex items-center space-x-4">
-          <Link
-            href="/analyst/ask-studio"
-            className="hidden sm:inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-orange-50 text-[#F97316] border border-orange-200 text-xs font-bold hover:bg-orange-100 transition-colors"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Open Ask Studio</span>
-          </Link>
-
-          <div className="flex items-center space-x-2.5 pl-3 border-l border-slate-200">
-            <div className="text-right hidden sm:block">
-              <p className="text-xs font-bold text-[#111827]">{currentUser.name}</p>
-              <span className="text-[10px] font-bold text-[#2563EB] bg-blue-50 px-1.5 py-0.2 rounded border border-blue-200">
-                DATA ANALYST
-              </span>
-            </div>
-            <button
-              onClick={async () => {
-                await signOut();
-                router.push("/login");
-              }}
-              className="p-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors"
-              title="Sign Out"
-            >
-              <LogOut className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </header>
+      {/* Dedicated Analyst Portal Header with Circled Avatar */}
+      <PortalHeader
+        portalType="ANALYST"
+        portalTitle="ANALYST"
+        badgeLabel="Analytics Studio & Query Lab"
+      />
 
       {/* Main Analyst Body */}
       <div className="flex flex-1 overflow-hidden">

@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { useApp } from "@/context/AppContext";
+import { PortalHeader } from "@/components/layout/PortalHeader";
 import {
   ShieldCheck,
   Users,
@@ -82,50 +83,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="flex min-h-screen flex-col bg-[#F8FAFC] font-sans antialiased text-[#111827]">
-      {/* Admin Top Header */}
-      <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-[#E2E8F0] bg-white px-6 shadow-xs">
-        <div className="flex items-center space-x-3">
-          <Link href="/admin" className="flex items-center space-x-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#1E3A8A] text-white shadow-sm">
-              <ShieldCheck className="h-5 w-5 text-blue-200" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-base font-black tracking-tight text-[#111827]">
-                InsightFlow <span className="text-[#2563EB]">ADMIN</span>
-              </span>
-            </div>
-          </Link>
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100/70 text-[#1E3A8A] border border-blue-200">
-            Enterprise Governance Portal
-          </span>
-        </div>
-
-        <div className="flex items-center space-x-4">
-          <div className="hidden sm:flex items-center space-x-2 text-xs bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span className="font-semibold text-slate-700">Root Governance Level</span>
-          </div>
-
-          <div className="flex items-center space-x-2.5 pl-3 border-l border-slate-200">
-            <div className="text-right hidden sm:block">
-              <p className="text-xs font-bold text-[#111827]">{currentUser.name}</p>
-              <span className="text-[10px] font-bold text-rose-600 bg-rose-50 px-1.5 py-0.2 rounded border border-rose-200">
-                ADMINISTRATOR
-              </span>
-            </div>
-            <button
-              onClick={async () => {
-                await signOut();
-                router.push("/login");
-              }}
-              className="p-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors"
-              title="Sign Out"
-            >
-              <LogOut className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </header>
+      {/* Dedicated Admin Portal Header with Circled Avatar */}
+      <PortalHeader
+        portalType="ADMIN"
+        portalTitle="ADMIN"
+        badgeLabel="Enterprise Governance Portal"
+      />
 
       {/* Main Admin Body */}
       <div className="flex flex-1 overflow-hidden">
